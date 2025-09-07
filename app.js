@@ -29,6 +29,7 @@ const displayCategories = () => {
     allCatBtn.forEach((btn, index) => {
 
         btn.addEventListener('click', (e) => {
+            postContainer.innerHTML = `<span class="loading loading-spinner text-success block content center"></span>`;
             allCatBtn.forEach((classToRemoveBtn) => {
                 classToRemoveBtn.classList.remove('bg-[#15803D]', 'text-white')
             })
@@ -41,7 +42,7 @@ const displayCategories = () => {
                 const fetchData = await fetch(postDataUrl);
                 const res = await fetchData.json();
                 // allData = res['plants'];
-                console.log(res['plants']);
+                //console.log(res['plants']);
                 displayData(res['plants']);
 
             }
@@ -71,7 +72,7 @@ const displayData = (arr) => {
                             <img src="${post['image']}" class="h-[100%]  rounded-lg"  width="100%" alt="" srcset="">
                         </div>
                         <div class="text-items space-y-3">
-                            <h3 class="font-bold text-lg">${post['name']}</h3>
+                            <h3 class="font-bold text-lg cursor-pointer hover:text-[#15803D] card-name" onclick="my_modal_2.showModal()">${post['name']}</h3>
                             <p class="text-gray-500 text-sm">${post['description']}</p>
                             <div class="cat-and-price flex items-center justify-between">
                                 <span class="card-category bg-[#DCFCE7] p-2 rounded-4xl text-[#15803D]">${post['category']}</span>
@@ -89,6 +90,45 @@ const displayData = (arr) => {
 
 
     })
+
+const cardNames = document.querySelectorAll('.card-name');
+const modalContainer = document.getElementById('modal-item-container')
+cardNames.forEach((name,index)=>{
+    name.addEventListener('click',()=>{
+        modalContainer.innerHTML = `<span class="loading loading-spinner text-success block content center"></span>`;
+        const loadSinglePost = async () =>{
+            const postData = await fetch(`https://openapi.programming-hero.com/api/plant/${arr[index]['id']}`);
+            const response = await postData.json();
+            const item = response['plants']
+            
+            modalContainer.innerHTML = '';
+            modalContainer.innerHTML += `                        <div class="thumbnail w-[100%] h-[250px] bg-[#EDEDED] rounded-lg mb-1">
+                            <img src="${item['image']}" class="h-[100%]  rounded-lg"  width="100%" alt="" srcset="">
+                        </div>
+                        <div class="text-items space-y-3">
+                            <h3 class="font-bold text-lg cursor-pointer hover:text-[#15803D] card-name">${item['name']}</h3>
+                            <p class="text-gray-500 text-sm">${item['description']}</p>
+                            <div class="cat-and-price flex items-center justify-between">
+                                <span class="card-category bg-[#DCFCE7] p-2 rounded-4xl text-[#15803D]">${item['category']}</span>
+                                <span class="price font-bold">৳${item['price']}</span>
+                            </div>
+
+                        </div>
+            `
+        }
+   loadSinglePost();
+    })
+})
+
+
+
+
+
+
+
+
+
+
 
     // const itemsInfo = [];
     const cardBtn = document.querySelectorAll('.add-cart-btn');
@@ -155,9 +195,9 @@ const deleteCartItem = (catID, price, count) =>{
    
     parent.removeChild(removingItem);
    
-    console.log(cartInfo);
+    //console.log(cartInfo);
     cartInfo.splice(itemIndex, 1);
-    console.log(cartInfo);
+    //console.log(cartInfo);
     
    
 
