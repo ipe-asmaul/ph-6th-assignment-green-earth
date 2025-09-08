@@ -101,16 +101,19 @@ const displayData = (arr) => {
                 const item = response['plants']
 
                 modalContainer.innerHTML = '';
-                modalContainer.innerHTML += `                        <div class="thumbnail w-[100%] h-[250px] bg-[#EDEDED] rounded-lg mb-1">
+                modalContainer.innerHTML += `                       
+                <div class="text-items mb-3"><h3 class="font-bold text-lg cursor-pointer hover:text-[#15803D] card-name">${item['name']}</h3></div>
+                <div class="thumbnail w-[100%] h-[250px] bg-[#EDEDED] rounded-lg mb-1">
                             <img src="${item['image']}" class="h-[100%]  rounded-lg"  width="100%" alt="" srcset="">
                         </div>
-                        <div class="text-items space-y-3">
-                            <h3 class="font-bold text-lg cursor-pointer hover:text-[#15803D] card-name">${item['name']}</h3>
-                            <p class="text-gray-500 text-sm">${item['description']}</p>
-                            <div class="cat-and-price flex items-center justify-between">
-                                <span class="card-category bg-[#DCFCE7] p-2 rounded-4xl text-[#15803D]">${item['category']}</span>
-                                <span class="price font-bold">৳${item['price']}</span>
+                        <div class="text-items space-y-1">
+                            
+                            
+                            <div class="cat-and-price flex-col flex items-start justify-between">
+                                <span class="card-category"><b>Category: </b> ${item['category']}</span>
+                                <span class="price font-bold"><b>Price: </b> ৳${item['price']}</span>
                             </div>
+                            <b>Description: </b> <p class="text-gray-500 text-sm">${item['description']}</p>
 
                         </div>
             `
@@ -162,7 +165,7 @@ const displayData = (arr) => {
                                 <h3 class="text-sm font-bold">${itemInfo['name']}</h3>
                                 <p class="text-gray-500 text-sm">৳${itemInfo['price']} x ${itemInfo.count}</p>
                             </div>
-                            <div class="icon-cancel text-gray-500 text-lg cursor-pointer" onclick="deleteCartItem(${dataId},${itemInfo['price']})">X</div>
+                            <div class="icon-cancel text-red-700 text-lg cursor-pointer font-bold" onclick="deleteCartItem(${dataId},${itemInfo['price']})">X</div>
                         </div>`;
             }
             //console.log(cartInfo);
