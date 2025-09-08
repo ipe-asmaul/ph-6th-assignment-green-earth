@@ -23,7 +23,7 @@ const displayCategories = () => {
     categoryContainer.innerHTML += ` <li class="list-none w-[100%] p-2 cursor-pointer bg-[#15803D] text-white rounded-md font-[500] text-sm cat-btn" data-id="0">All
                                 Trees</li>`;
     allCategory.forEach((cat, index) => {
-        categoryContainer.innerHTML += `<li class="list-none hover:bg-[#DCFCE7] cursor-pointer rounded-md text-sm p-2 cat-btn" data-id="${cat['id']}">${cat['category_name']}</li>`;
+        categoryContainer.innerHTML += `<li class="list-none hover:bg-[#15803D] hover:text-white cursor-pointer rounded-md text-sm p-2 cat-btn" data-id="${cat['id']}">${cat['category_name']}</li>`;
     });
     const allCatBtn = document.querySelectorAll('.cat-btn');
     allCatBtn.forEach((btn, index) => {
@@ -69,7 +69,7 @@ const displayData = (arr) => {
         postContainer.innerHTML += `
                                  <div class="card bg-white rounded-lg p-2 content-center justify-center h-auto" data-id=${post['id']}>
                         <div class="thumbnail w-[100%] h-[250px] bg-[#EDEDED] rounded-lg mb-1">
-                            <img src="${post['image']}" class="h-[100%]  rounded-lg"  width="100%" alt="" srcset="">
+                            <img src="${post['image']}" class="h-[100%]  rounded-lg"  width="100%" alt="${post['name']}" srcset="" loading="lazy">
                         </div>
                         <div class="text-items space-y-3">
                             <h3 class="font-bold text-lg cursor-pointer hover:text-[#15803D] card-name" onclick="my_modal_2.showModal()">${post['name']}</h3>
@@ -91,18 +91,18 @@ const displayData = (arr) => {
 
     })
 
-const cardNames = document.querySelectorAll('.card-name');
-const modalContainer = document.getElementById('modal-item-container')
-cardNames.forEach((name,index)=>{
-    name.addEventListener('click',()=>{
-        modalContainer.innerHTML = `<span class="loading loading-spinner text-success block content center"></span>`;
-        const loadSinglePost = async () =>{
-            const postData = await fetch(`https://openapi.programming-hero.com/api/plant/${arr[index]['id']}`);
-            const response = await postData.json();
-            const item = response['plants']
-            
-            modalContainer.innerHTML = '';
-            modalContainer.innerHTML += `                        <div class="thumbnail w-[100%] h-[250px] bg-[#EDEDED] rounded-lg mb-1">
+    const cardNames = document.querySelectorAll('.card-name');
+    const modalContainer = document.getElementById('modal-item-container')
+    cardNames.forEach((name, index) => {
+        name.addEventListener('click', () => {
+            modalContainer.innerHTML = `<span class="loading loading-spinner text-success block content center"></span>`;
+            const loadSinglePost = async () => {
+                const postData = await fetch(`https://openapi.programming-hero.com/api/plant/${arr[index]['id']}`);
+                const response = await postData.json();
+                const item = response['plants']
+
+                modalContainer.innerHTML = '';
+                modalContainer.innerHTML += `                        <div class="thumbnail w-[100%] h-[250px] bg-[#EDEDED] rounded-lg mb-1">
                             <img src="${item['image']}" class="h-[100%]  rounded-lg"  width="100%" alt="" srcset="">
                         </div>
                         <div class="text-items space-y-3">
@@ -115,10 +115,10 @@ cardNames.forEach((name,index)=>{
 
                         </div>
             `
-        }
-   loadSinglePost();
+            }
+            loadSinglePost();
+        })
     })
-})
 
 
 
@@ -133,7 +133,7 @@ cardNames.forEach((name,index)=>{
     // const itemsInfo = [];
     const cardBtn = document.querySelectorAll('.add-cart-btn');
     const total = document.getElementById('total');
-    
+
 
     //console.log(cardBtn);
     cardBtn.forEach((btn, index) => {
@@ -168,7 +168,14 @@ cardNames.forEach((name,index)=>{
             }
             //console.log(cartInfo);
             let totalPrice = cartInfo.map(item => parseInt(item.price) * parseInt(item.count)).reduce((acc, curr) => acc + curr);
-            total.innerText =totalPrice;
+            total.innerText = totalPrice;
+
+            Swal.fire({
+                title: "Successfully Added to Cart",
+                icon: "success",
+
+            });
+
 
 
 
@@ -185,21 +192,40 @@ cardNames.forEach((name,index)=>{
 }
 
 
-const deleteCartItem = (catID, price, count) =>{
-     const itemIndex = cartInfo.findIndex(item => item.id == catID);
-     const parent = document.getElementById('cart-items');
+const deleteCartItem = (catID, price, count) => {
+
+    const itemIndex = cartInfo.findIndex(item => item.id == catID);
+    const parent = document.getElementById('cart-items');
     const total = document.getElementById('total');
-    total.innerText = parseInt(total.innerText) - parseInt(price) * parseInt(cartInfo[itemIndex].count);
-    removingItem = document.querySelector(`[cart-data-id="${catID}"]`);
-   // console.log(removingItem);
-   
-    parent.removeChild(removingItem);
-   
+    Swal.fire({
+        title: `Are you sure to Remove ${cartInfo[itemIndex].name}?`,
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Remove it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: "Removed!",
+                text: "Your item has been removed.",
+                icon: "success"
+            });
+            total.innerText = parseInt(total.innerText) - parseInt(price) * parseInt(cartInfo[itemIndex].count);
+            removingItem = document.querySelector(`[cart-data-id="${catID}"]`);
+
+
+            parent.removeChild(removingItem);
+
+
+            cartInfo.splice(itemIndex, 1);
+        }
+    });
+
     //console.log(cartInfo);
-    cartInfo.splice(itemIndex, 1);
-    //console.log(cartInfo);
-    
-   
+
+
 
 }
 //document.getElementById('all-trees').addEventListener('click',loadData);
@@ -209,6 +235,5 @@ const deleteCartItem = (catID, price, count) =>{
 
 //window.onload = displayCategories;
 //console.log(allCategory);
-   
-        
-    
+
+
