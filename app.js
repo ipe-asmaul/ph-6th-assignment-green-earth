@@ -5,7 +5,6 @@ const cartElementContainer = document.getElementById('cart-items');
 //const individualCardBtn = document.querySelectorAll('card-btn');
 let allCategory = [];
 const cartInfo = [];
-// let allData = [];
 let postDataUrl = 'https://openapi.programming-hero.com/api/plants';
 
 const loadCategory = async () => {
@@ -20,7 +19,7 @@ loadCategory();
 
 const displayCategories = () => {
     categoryContainer.innerHTML = "";
-    categoryContainer.innerHTML += ` <li class="list-none w-[100%] p-2 cursor-pointer bg-[#15803D] text-white rounded-md font-[500] text-sm cat-btn" data-id="0">All
+    categoryContainer.innerHTML += ` <li class="list-none w-[100%] p-2 hover:bg-[#15803D] hover:text-white cursor-pointer bg-[#15803D] text-white rounded-md font-[500] text-sm cat-btn" data-id="0">All
                                 Trees</li>`;
     allCategory.forEach((cat, index) => {
         categoryContainer.innerHTML += `<li class="list-none hover:bg-[#15803D] hover:text-white cursor-pointer rounded-md text-sm p-2 cat-btn" data-id="${cat['id']}">${cat['category_name']}</li>`;
